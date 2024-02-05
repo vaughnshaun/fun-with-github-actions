@@ -34,6 +34,9 @@ jobs:
       shell: pwsh
       run: |
         $PSVersionTable
+    - name: list files
+      shell: pwsh
+      run: ls
         
   greet:
     runs-on: unbuntu-latest
