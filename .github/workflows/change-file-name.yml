@@ -34,8 +34,9 @@ jobs:
       shell: pwsh
       run: |
         $PSVersionTable
+        
   greet:
     runs-on: unbuntu-latest
     steps:
       - name: Greet Only
-      - run: echo "I'm greeting"
+        run: echo "I'm greeting"
