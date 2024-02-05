@@ -37,4 +37,4 @@ jobs:
     - name: list files
       shell: pwsh
       run: |
-        Get-ChildItem ${{ github.workspace }}\files -Force
+        Get-ChildItem ${{ github.workspace }} -Force -Recurse
