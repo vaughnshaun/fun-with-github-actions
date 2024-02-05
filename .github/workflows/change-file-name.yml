@@ -36,10 +36,5 @@ jobs:
         $PSVersionTable
     - name: list files
       shell: pwsh
-      run: ls
-        
-  greet:
-    runs-on: unbuntu-latest
-    steps:
-      - name: Greet Only
-        run: echo "I'm greeting"
+      run: |
+        ls
