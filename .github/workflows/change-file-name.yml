@@ -1,6 +1,6 @@
 # This is a basic workflow that is manually triggered
 
-name: Manual workflow
+name: Change File Name
 
 # Controls when the action will run. Workflow runs when manually triggered using the UI
 # or API.
@@ -30,3 +30,7 @@ jobs:
     # Runs a single command using the runners shell
     - name: Send greeting
       run: echo "Hello ${{ inputs.name }}"
+    - name: Get PowerShell Version
+      shell: pwsh
+      run: |
+        $PSVersionTable
