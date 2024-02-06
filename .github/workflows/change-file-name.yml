@@ -30,11 +30,11 @@ jobs:
     # Runs a single command using the runners shell
     - name: Send greeting
       run: echo "Hello ${{ inputs.name }}"
-    - name: Get PowerShell Version
-      shell: pwsh
-      run: |
-        $PSVersionTable
     - name: list files
       shell: pwsh
       run: |
         Get-ChildItem ${{ github.workspace }} -Force -Recurse | foreach-object {write-host $_.FullName}
+    - name: Get PowerShell Version
+      shell: pwsh
+      run: |
+        $PSVersionTable
