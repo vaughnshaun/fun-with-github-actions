@@ -38,3 +38,7 @@ jobs:
       shell: pwsh
       run: |
         $PSVersionTable
+    - name: PowerShell Get File Contents
+      shell: pwsh
+      run: |
+        Get-Content -Path ${{ github.workspace }}/files/file1.txt -TotalCount 5
