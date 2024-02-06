@@ -41,4 +41,4 @@ jobs:
     - name: PowerShell Get File Contents
       shell: pwsh
       run: |
-        Get-Content -Path ${{ github.workspace }}/files/file1.txt -TotalCount 5
+        Get-Content -Path /home/runner/work/fun-with-github-actions/files/file1.txt -TotalCount 5
