@@ -45,3 +45,14 @@ jobs:
       shell: pwsh
       run: |
         Get-Content -Path files/file1.txt -TotalCount 5
+    - name: Copy Files
+      shell: pwsh
+      run: |
+        Get-ChildItem files -Force -Recurse | foreach-object 
+        {
+          Copy-Item $_.FullName -Destination "build"
+        }
+    - name: Display Build Files
+      shell: pwsh
+      run: |
+        Get-ChildItem build -Force -Recurse | foreach-object {write-host $_.FullName}
