@@ -27,13 +27,16 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
     # Runs a single command using the runners shell
     - name: Send greeting
       run: echo "Hello ${{ inputs.name }}"
     - name: list files
       shell: pwsh
       run: |
-        Get-ChildItem ${{ github.workspace }} -Force -Recurse | foreach-object {write-host $_.FullName}
+        Get-ChildItem files -Force -Recurse | foreach-object {write-host $_.FullName}
     - name: Get PowerShell Version
       shell: pwsh
       run: |
@@ -41,4 +44,4 @@ jobs:
     - name: PowerShell Get File Contents
       shell: pwsh
       run: |
-        Get-Content -Path ./files/file1.txt -TotalCount 5
+        Get-Content -Path files/file1.txt -TotalCount 5
