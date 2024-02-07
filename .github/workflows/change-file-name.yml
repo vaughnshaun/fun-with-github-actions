@@ -48,7 +48,8 @@ jobs:
     - name: Copy Files
       shell: pwsh
       run: |
-        Get-ChildItem files -Force -Recurse | foreach-object { Copy-Item $_.FullName -Destination "build" }
+        mkdir build
+        Get-ChildItem files -Force -Recurse | foreach-object { Copy-Item $_.FullName -Destination "$("build\" + "[DEV]" + $_.Name)" }
     - name: Display Build Files
       shell: pwsh
       run: |
