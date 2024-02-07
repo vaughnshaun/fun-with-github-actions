@@ -48,9 +48,24 @@ jobs:
     - name: Copy Files
       shell: pwsh
       run: |
+        rm build -r
         mkdir build
         Get-ChildItem files -Force -Recurse | foreach-object { Copy-Item $_.FullName -Destination "$("build\" + "[DEV]" + $_.Name)" }
+    - name: Upload Dev Files
+      uses: actions/upload-artifact@v3
+      with:
+        path: build
+        name: dev
     - name: Display Build Files
       shell: pwsh
       run: |
         Get-ChildItem build -Force -Recurse | foreach-object {write-host $_.FullName}
+  dev_show_file:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/download-artifact@v3
+      with:
+        name: dev
+        path: published
+    - name: Display structure of downloaded files
+      run: ls -R published
