@@ -1,0 +1,60 @@
+{
+  "config": "{\"version\":\"5.49\",\"themeCollection\":{\"baseTheme\":{\"name\":\"CY23SU11\",\"version\":\"5.50\",\"type\":2}},\"activeSectionIndex\":0,\"defaultDrillFilterOtherVisuals\":true,\"slowDataSourceSettings\":{\"isCrossHighlightingDisabled\":false,\"isSlicerSelectionsButtonEnabled\":false,\"isFilterSelectionsButtonEnabled\":false,\"isFieldWellButtonEnabled\":false,\"isApplyAllButtonEnabled\":false},\"linguisticSchemaSyncVersion\":0,\"settings\":{\"useNewFilterPaneExperience\":true,\"allowChangeFilterTypes\":true,\"useStylableVisualContainerHeader\":true,\"queryLimitOption\":6,\"exportDataMode\":1,\"useDefaultAggregateDisplayName\":true},\"objects\":{\"section\":[{\"properties\":{\"verticalAlignment\":{\"expr\":{\"Literal\":{\"Value\":\"'Top'\"}}}}}]}}",
+  "layoutOptimization": 0,
+  "resourcePackages": [
+    {
+      "resourcePackage": {
+        "disabled": false,
+        "items": [
+          {
+            "name": "CY23SU11",
+            "path": "BaseThemes/CY23SU11.json",
+            "type": 202
+          }
+        ],
+        "name": "SharedResources",
+        "type": 2
+      }
+    }
+  ],
+  "sections": [
+    {
+      "config": "{}",
+      "displayName": "Page 1",
+      "displayOption": 1,
+      "filters": "[]",
+      "height": 720.00,
+      "name": "ReportSection",
+      "visualContainers": [
+        {
+          "config": "{\"name\":\"23b5f3e4c1598023db83\",\"layouts\":[{\"id\":0,\"position\":{\"x\":0,\"y\":143.31288343558282,\"z\":0,\"width\":388.7116564417178,\"height\":549.6932515337423,\"tabOrder\":0}}],\"singleVisual\":{\"visualType\":\"tableEx\",\"projections\":{\"Values\":[{\"queryRef\":\"Table 1.Column1\"},{\"queryRef\":\"Table 1.Column2\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"t\",\"Entity\":\"Table 1\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"t\"}},\"Property\":\"Column1\"},\"Name\":\"Table 1.Column1\",\"NativeReferenceName\":\"Column1\"},{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"t\"}},\"Property\":\"Column2\"},\"Name\":\"Table 1.Column2\",\"NativeReferenceName\":\"Column2\"}]},\"drillFilterOtherVisuals\":true}}",
+          "filters": "[]",
+          "height": 549.69,
+          "width": 388.71,
+          "x": 0.00,
+          "y": 143.31,
+          "z": 0.00
+        },
+        {
+          "config": "{\"name\":\"4a240ef6c4783ae8155e\",\"layouts\":[{\"id\":0,\"position\":{\"x\":0,\"y\":13.087934560327199,\"z\":1,\"width\":1280,\"height\":104.70347648261759,\"tabOrder\":1}}],\"singleVisual\":{\"visualType\":\"card\",\"projections\":{\"Values\":[{\"queryRef\":\"Min(website.website)\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"w\",\"Entity\":\"website\",\"Type\":0}],\"Select\":[{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"w\"}},\"Property\":\"website\"}},\"Function\":3},\"Name\":\"Min(website.website)\",\"NativeReferenceName\":\"First website\"}]},\"drillFilterOtherVisuals\":true,\"objects\":{\"categoryLabels\":[{\"properties\":{\"show\":{\"expr\":{\"Literal\":{\"Value\":\"false\"}}}}}],\"labels\":[{\"properties\":{\"fontSize\":{\"expr\":{\"Literal\":{\"Value\":\"20D\"}}}}}]}}}",
+          "filters": "[]",
+          "height": 104.70,
+          "width": 1280.00,
+          "x": 0.00,
+          "y": 13.09,
+          "z": 1.00
+        },
+        {
+          "config": "{\"name\":\"b53c8ca327a6bcd9c0d2\",\"layouts\":[{\"id\":0,\"position\":{\"x\":389,\"y\":143,\"width\":891,\"height\":550,\"z\":2,\"tabOrder\":2}}],\"singleVisual\":{\"visualType\":\"tableEx\",\"projections\":{\"Values\":[{\"queryRef\":\"ign.Column1\"},{\"queryRef\":\"ign.Column2\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"i\",\"Entity\":\"ign\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"i\"}},\"Property\":\"Column1\"},\"Name\":\"ign.Column1\",\"NativeReferenceName\":\"Column1\"},{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"i\"}},\"Property\":\"Column2\"},\"Name\":\"ign.Column2\",\"NativeReferenceName\":\"Column2\"}]},\"drillFilterOtherVisuals\":true}}",
+          "filters": "[]",
+          "height": 550.00,
+          "width": 891.00,
+          "x": 389.00,
+          "y": 143.00,
+          "z": 2.00
+        }
+      ],
+      "width": 1280.00
+    }
+  ]
+}
