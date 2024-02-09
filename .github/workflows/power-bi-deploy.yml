@@ -48,9 +48,12 @@ jobs:
     - name: Copy Files
       shell: pwsh
       run: |
-        rm build -r
-        mkdir build
-        Get-ChildItem files -Force -Recurse | foreach-object { Copy-Item $_.FullName -Destination "$("build\" + "[DEV]" + $_.Name)" }
+        rm build/reports -r
+        rm build/scripts -r
+        mkdir build/reports
+        mkdir build/scripts
+        Get-ChildItem files -Force -Recurse | foreach-object { Copy-Item $_.FullName -Destination "$("build\reports" + "[DEV]" + $_.Name)" }
+        Get-ChildItem scripts -Force -Recurse | foreach-object { Copy-Item $_.FullName -Destination "$("build\scripts" + $_.Name)" }
     - name: Upload Dev Files
       uses: actions/upload-artifact@v3
       with:
@@ -69,7 +72,7 @@ jobs:
         name: dev
         path: published
     - name: Display structure of downloaded files
-      run: ls -R published
+      run: ls -R published/build
     - name: Deploy Power BI
       run: |
-        ./scripts/powerbi.ps1 -ClientId ${{ secrets.ClientID }} -TenantId ${{ secrets.TenantID }} -ClientSecret ${{ secrets.ClientSecret }}
+        ./published/build/scripts/powerbi.ps1 -ClientId ${{ secrets.ClientID }} -TenantId ${{ secrets.TenantID }} -ClientSecret ${{ secrets.ClientSecret }}
