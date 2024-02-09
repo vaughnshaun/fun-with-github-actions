@@ -1,5 +1,5 @@
 param ($ClientId, $TenantId, $ClientSecret)
-Set-ExecutionPolicy RemoteSigned
+#Set-ExecutionPolicy RemoteSigned
 Set-PSRepository PSGallery -InstallationPolicy Trusted
 Install-Module -Name MicrosoftPowerBIMgmt
 Install-Module -Name MicrosoftPowerBIMgmt.Workspaces
@@ -15,4 +15,4 @@ $Credential = New-Object Management.Automation.PSCredential($ClientId, $SecurePa
 # Connect to the Power BI service
 Connect-PowerBIServiceAccount -ServicePrincipal -TenantId $TenantId -Credential $Credential
 
-Set-ExecutionPolicy Default
+#Set-ExecutionPolicy Default
