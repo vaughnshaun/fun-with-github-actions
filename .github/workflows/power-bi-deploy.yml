@@ -74,4 +74,4 @@ jobs:
       run: ls -R published/build
     - name: Deploy Power BI
       run: |
-        ./published/build/scripts/powerbi.ps1 -ClientId ${{ secrets.ClientID }} -TenantId ${{ secrets.TenantID }} -ClientSecret ${{ secrets.ClientSecret }}
+        ./published/scripts/powerbi.ps1 -ClientId ${{ secrets.ClientID }} -TenantId ${{ secrets.TenantID }} -ClientSecret ${{ secrets.ClientSecret }}
