@@ -1,6 +1,6 @@
 param ($ClientId, $TenantId, $ClientSecret)
 Set-ExecutionPolicy RemoteSigned
-Set-PSRepository PSGallery -InstallationPolicy Trusted
+
 Install-Module -Name MicrosoftPowerBIMgmt
 Install-Module -Name MicrosoftPowerBIMgmt.Workspaces
 Install-Module -Name MicrosoftPowerBIMgmt.Data
