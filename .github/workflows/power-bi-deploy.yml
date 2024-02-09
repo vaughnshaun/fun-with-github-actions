@@ -30,10 +30,6 @@ jobs:
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0
-    - name: test
-      shell: pwsh
-      run: |
-        ./scripts/powerbi.ps1 -ClientId ${{ secrets.ClientID }} -TenantId ${{ secrets.TenantID }} -ClientSecret ${{ secrets.ClientSecret }}
     # Runs a single command using the runners shell
     - name: Send greeting
       run: echo "Hello ${{ inputs.name }}"
@@ -77,18 +73,6 @@ jobs:
     - name: Display structure of downloaded files
       run: ls -R published
     - name: Deploy Power BI
+      shell: pwsh
       run: |
-        Set-PSRepository PSGallery -InstallationPolicy Trusted
-        Install-Module -Name MicrosoftPowerBIMgmt
-        Install-Module -Name MicrosoftPowerBIMgmt.Workspaces
-        Install-Module -Name MicrosoftPowerBIMgmt.Data
-        Install-Module -Name MicrosoftPowerBIMgmt.Reports
-        
-        # Create Secure Strings
-        
-        $SecurePassword = ConvertTo-SecureString ${{ secrets.ClientSecret }} -Force -AsPlainText
-        $Credential = New-Object Management.Automation.PSCredential(${{ secrets.ClientID }}, $SecurePassword)
-        
-        
-        # Connect to the Power BI service
-        Connect-PowerBIServiceAccount -ServicePrincipal -TenantId ${{ secrets.TenantID }} -Credential $Credential
+        ./scripts/powerbi.ps1 -ClientId ${{ secrets.ClientID }} -TenantId ${{ secrets.TenantID }} -ClientSecret ${{ secrets.ClientSecret }}
