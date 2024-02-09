@@ -48,7 +48,7 @@ jobs:
     - name: Copy Files
       shell: pwsh
       run: |
-        rm build -r > nul
+        if (Test-Path -Path test) {rm build -r}
         mkdir build/reports
         mkdir build/scripts
         Get-ChildItem files -Force -Recurse | foreach-object { Copy-Item $_.FullName -Destination "$("build\reports" + "[DEV]" + $_.Name)" }
