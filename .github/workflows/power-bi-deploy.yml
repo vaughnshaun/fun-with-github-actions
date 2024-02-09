@@ -71,7 +71,7 @@ jobs:
         name: dev
         path: published
     - name: Display structure of downloaded files
-      run: ls -R published/build
+      run: ls -R published
     - name: Deploy Power BI
       run: |
         ./published/scripts/powerbi.ps1 -ClientId ${{ secrets.ClientID }} -TenantId ${{ secrets.TenantID }} -ClientSecret ${{ secrets.ClientSecret }}
