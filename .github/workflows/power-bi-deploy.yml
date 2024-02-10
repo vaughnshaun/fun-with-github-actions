@@ -36,9 +36,9 @@ jobs:
       shell: pwsh
       run: |
         Get-ChildItem build -Force -Recurse | foreach-object {write-host $_.FullName}
-  deploy:
+  Dev:
     runs-on: ubuntu-latest
-    environment: dev
+    environment: Dev
     needs: get_files
     steps:
     - uses: actions/download-artifact@v3
@@ -48,4 +48,30 @@ jobs:
     - name: Deploy Power BI
       shell: pwsh
       run: |
-        ./published/scripts/powerbiDeploy.ps1 -ClientId ${{ secrets.ClientID }} -TenantId ${{ secrets.TenantID }} -ClientSecret ${{ secrets.ClientSecret }} -reportPrefix "[DEV] " -reportsFolder "published/reports"
+        ./published/scripts/powerbiDeploy.ps1 -ClientId ${{ secrets.ClientID }} -TenantId ${{ secrets.TenantID }} -ClientSecret ${{ secrets.ClientSecret }} -workspaceName FromGithub -reportPrefix "[DEV] " -reportsPath "${{ github.workspace }}/published/reports/*.pbix" -dataSetConnections '${{ vars.DATA_CONNECTIONS }}'
+  Stage:
+    runs-on: ubuntu-latest
+    environment: Stage
+    needs: get_files
+    steps:
+    - uses: actions/download-artifact@v3
+      with:
+        name: drop
+        path: published
+    - name: Deploy Power BI
+      shell: pwsh
+      run: |
+        ./published/scripts/powerbiDeploy.ps1 -ClientId ${{ secrets.ClientID }} -TenantId ${{ secrets.TenantID }} -ClientSecret ${{ secrets.ClientSecret }} -workspaceName FromGithub -reportPrefix "[STG] " -reportsPath "${{ github.workspace }}/published/reports/*.pbix" -dataSetConnections '${{ vars.DATA_CONNECTIONS }}'
+  Prod:
+    runs-on: ubuntu-latest
+    environment: Prod
+    needs: get_files
+    steps:
+    - uses: actions/download-artifact@v3
+      with:
+        name: drop
+        path: published
+    - name: Deploy Power BI
+      shell: pwsh
+      run: |
+        ./published/scripts/powerbiDeploy.ps1 -ClientId ${{ secrets.ClientID }} -TenantId ${{ secrets.TenantID }} -ClientSecret ${{ secrets.ClientSecret }} -workspaceName FromGithub -reportsPath "${{ github.workspace }}/published/reports/*.pbix" -dataSetConnections '${{ vars.DATA_CONNECTIONS }}'
