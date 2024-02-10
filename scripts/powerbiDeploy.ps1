@@ -59,7 +59,7 @@ foreach ($report in $allReports)
 	
 	if($reportSettings -ne $null)
 	{
-		$reportParameters = $reportSettings.Parameters | ConvertTo-Json
+		$reportParameters =  ConvertTo-Json @($reportSettings.Parameters)
 		
 		# Update connections for report dataset
 		$body = $('{ "updateDetails":' + $reportParameters + '}').ToString()

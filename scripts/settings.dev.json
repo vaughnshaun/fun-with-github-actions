@@ -4,5 +4,6 @@
 		  "name": "website",
 		  "newValue": "https://learn.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-8.0"
 		}
-	]
+	],
+	"test": "2"
 }
