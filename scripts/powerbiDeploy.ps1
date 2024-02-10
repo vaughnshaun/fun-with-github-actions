@@ -25,6 +25,7 @@ Set-PSRepository PSGallery -InstallationPolicy Trusted
 Install-Module -Name MicrosoftPowerBIMgmt.Workspaces
 Install-Module -Name MicrosoftPowerBIMgmt.Reports
 Install-Module -Name MicrosoftPowerBIMgmt.Profile
+Install-Module -Name MicrosoftPowerBIMgmt.Data
 
 # Get all reports
 $searchPath = ""
