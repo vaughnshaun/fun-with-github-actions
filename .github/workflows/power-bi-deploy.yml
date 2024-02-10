@@ -48,4 +48,4 @@ jobs:
     - name: Deploy Power BI
       shell: pwsh
       run: |
-        ./published/scripts/powerbiDeploy.ps1 -ClientId ${{ secrets.ClientID }} -TenantId ${{ secrets.TenantID }} -ClientSecret ${{ secrets.ClientSecret }} -reportPrefix "[DEV] " -reportsFolder reports
+        ./published/scripts/powerbiDeploy.ps1 -ClientId ${{ secrets.ClientID }} -TenantId ${{ secrets.TenantID }} -ClientSecret ${{ secrets.ClientSecret }} -reportPrefix "[DEV] " -reportsFolder "published/reports"
