@@ -62,53 +62,49 @@ foreach ($report in $allReports)
 {
 	$reportName = $reportPrefix + $report.Name
 	$reportPath = $report.FullName
+	$baseReportName = $reportPrefix + $report.BaseName
 
 	echo ("uploading " + $reportPath)
 	New-PowerBIReport -Path $reportPath -Name $reportName -WorkspaceId $workspaceId -ConflictAction CreateOrOverwrite
+	$datasetId = (Get-PowerBIReport -Name $baseReportName -WorkspaceId $workspaceId).DatasetId
 
-	# Update connections for all datasets
-	$datasetsArray = (Get-PowerBIDataset -WorkspaceId $workspaceId)
+	# Update connections for report dataset
+	$urlUpdateParams = $("https://api.powerbi.com/v1.0/myorg/groups/" + $workspaceId + "/datasets/"+ $datasetId +"/Default.UpdateParameters")
+	echo $urlUpdateParams
 
-	foreach ($dataSet in $datasetsArray)
-	{
-		$datasetId = $dataSet.id
-		$urlUpdateParams = $("https://api.powerbi.com/v1.0/myorg/groups/" + $workspaceId + "/datasets/"+ $datasetId +"/Default.UpdateParameters")
-		echo $urlUpdateParams
+	$content = 'application/json'
 
-		$content = 'application/json'
+	#Take over ownership
+	$TakeOverUrl = $("https://api.powerbi.com/v1.0/myorg/groups/" + $workspaceId + "/datasets/"+ $datasetId +"/Default.TakeOver")
+	Invoke-PowerBIRestMethod -Url $TakeOverUrl -Method Post
 
-		#Take over ownership
-		$TakeOverUrl = $("https://api.powerbi.com/v1.0/myorg/groups/" + $workspaceId + "/datasets/"+ $datasetId +"/Default.TakeOver")
-		Invoke-PowerBIRestMethod -Url $TakeOverUrl -Method Post
-
-		# Updates Dataset Parameters
-		try{
-		  Invoke-PowerBIRestMethod -Url $urlUpdateParams -Method Post -Body $body -ContentType $content -ErrorAction Stop
-		}
-		catch [System.AggregateException]{
-		  $exceptionCode = ""
-		  if($PSItem.Exception.InnerException -ne $null)
-		  {
-			$innerExMsg = $PSItem.Exception.InnerException.Message
-			$exceptionCode = ($innerExMsg | ConvertFrom-Json).code
-			Write-Host $exceptionCode
-		  }
-		  
-		  if ($exceptionCode -eq "ItemNotFound")
-		  {
-			  Write-Warning "All parameters not updated. This is ok. The shared connections will still be updated"
-		  }
-		  else 
-		  {
-			Write-Error $PSItem.Exception
-			throw $PSItem
-		  }
-		}
-
-		# Refresh Dataset
-		$refreshUrl = $("https://api.powerbi.com/v1.0/myorg/groups/" + $workspaceId + "/datasets/"+ $datasetId +"/refreshes")
-		Invoke-PowerBIRestMethod -Url $refreshUrl -Method Post
+	# Updates Dataset Parameters
+	try{
+	  Invoke-PowerBIRestMethod -Url $urlUpdateParams -Method Post -Body $body -ContentType $content -ErrorAction Stop
 	}
+	catch [System.AggregateException]{
+	  $exceptionCode = ""
+	  if($PSItem.Exception.InnerException -ne $null)
+	  {
+		$innerExMsg = $PSItem.Exception.InnerException.Message
+		$exceptionCode = ($innerExMsg | ConvertFrom-Json).code
+		Write-Host $exceptionCode
+	  }
+	  
+	  if ($exceptionCode -eq "ItemNotFound")
+	  {
+		  Write-Warning "All parameters not updated. This is ok. The shared connections will still be updated"
+	  }
+	  else 
+	  {
+		Write-Error $PSItem.Exception
+		throw $PSItem
+	  }
+	}
+
+	# Refresh Dataset
+	$refreshUrl = $("https://api.powerbi.com/v1.0/myorg/groups/" + $workspaceId + "/datasets/"+ $datasetId +"/refreshes")
+	Invoke-PowerBIRestMethod -Url $refreshUrl -Method Post
 }
 
 Disconnect-PowerBIServiceAccount
