@@ -36,7 +36,7 @@ jobs:
       shell: pwsh
       run: |
         Get-ChildItem build -Force -Recurse | foreach-object {write-host $_.FullName}
-  deploy:
+  Dev:
     runs-on: ubuntu-latest
     environment: dev
     needs: get_files
