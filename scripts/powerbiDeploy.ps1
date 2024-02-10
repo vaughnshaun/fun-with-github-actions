@@ -23,7 +23,7 @@ if(Test-Path -Path $defaultSettingsPath)
 # Display params
 echo Preparing to upload
 Write-Host $("Workspace: " + $workspaceName)
-Write-Host $("Reports path: " + $$reportsPath)
+Write-Host $("Reports path: " + $reportsPath)
 Write-Host $("Report Prefix: " + $reportPrefix)
   
 $allReports = Get-ChildItem -Path $reportsPath -Recurse -Include *.pbix
