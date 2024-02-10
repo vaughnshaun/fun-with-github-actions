@@ -61,7 +61,7 @@ jobs:
     - name: Deploy Power BI
       shell: pwsh
       run: |
-        ./published/scripts/powerbiDeploy.ps1 -ClientId ${{ secrets.ClientID }} -TenantId ${{ secrets.TenantID }} -ClientSecret ${{ secrets.ClientSecret }} -workspaceName FromGithub -reportPrefix "[STG] " -reportsPath ${{ github.workspace }}/published/reports/*.pbix" -dataSetConnections '${{ vars.DATA_CONNECTIONS }}'
+        ./published/scripts/powerbiDeploy.ps1 -ClientId ${{ secrets.ClientID }} -TenantId ${{ secrets.TenantID }} -ClientSecret ${{ secrets.ClientSecret }} -workspaceName FromGithub -reportPrefix "[STG] " -reportsPath "${{ github.workspace }}/published/reports/*.pbix" -dataSetConnections '${{ vars.DATA_CONNECTIONS }}'
   Prod:
     runs-on: ubuntu-latest
     environment: Prod
