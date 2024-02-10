@@ -53,15 +53,17 @@ foreach ($report in $allReports)
 		$reportSettings = (Get-Content -Path $reportSettingsPath | ConvertFrom-Json)
 	}
 	
+	echo ("uploading " + $reportPath)
+	New-PowerBIReport -Path $reportPath -Name $reportName -WorkspaceId $workspaceId -ConflictAction CreateOrOverwrite
+	$datasetId = (Get-PowerBIReport -Name $baseReportName -WorkspaceId $workspaceId).DatasetId
+	
 	if($reportSettings -ne $null)
 	{
-		echo ("uploading " + $reportPath)
-		New-PowerBIReport -Path $reportPath -Name $reportName -WorkspaceId $workspaceId -ConflictAction CreateOrOverwrite
-		$datasetId = (Get-PowerBIReport -Name $baseReportName -WorkspaceId $workspaceId).DatasetId
-
+		$reportParameters = $reportSettings.Parameters | ConvertTo-Json
+		
 		# Update connections for report dataset
-		$body = $('{ "updateDetails":' + $reportSettings.Parameters + '}').ToString()
-		Write-Host $("Update Parameters: " + $reportSettings.Parameters)
+		$body = $('{ "updateDetails":' + $reportParameters + '}').ToString()
+		Write-Host $("Update Parameters: " + $reportParameters)
 		$urlUpdateParams = $("https://api.powerbi.com/v1.0/myorg/groups/" + $workspaceId + "/datasets/"+ $datasetId +"/Default.UpdateParameters")
 		echo $urlUpdateParams
 
