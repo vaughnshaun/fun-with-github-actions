@@ -38,7 +38,7 @@ jobs:
         Get-ChildItem build -Force -Recurse | foreach-object {write-host $_.FullName}
   Dev:
     runs-on: ubuntu-latest
-    environment: dev
+    environment: Dev
     needs: get_files
     steps:
     - uses: actions/download-artifact@v3
@@ -49,3 +49,29 @@ jobs:
       shell: pwsh
       run: |
         ./published/scripts/powerbiDeploy.ps1 -ClientId ${{ secrets.ClientID }} -TenantId ${{ secrets.TenantID }} -ClientSecret ${{ secrets.ClientSecret }} -reportPrefix "[DEV] " -reportsFolder "published/reports"
+  Stage:
+    runs-on: ubuntu-latest
+    environment: Stage
+    needs: get_files
+    steps:
+    - uses: actions/download-artifact@v3
+      with:
+        name: drop
+        path: published
+    - name: Deploy Power BI
+      shell: pwsh
+      run: |
+        ./published/scripts/powerbiDeploy.ps1 -ClientId ${{ secrets.ClientID }} -TenantId ${{ secrets.TenantID }} -ClientSecret ${{ secrets.ClientSecret }} -reportPrefix "[STG] " -reportsFolder "published/reports"
+  Prod:
+    runs-on: ubuntu-latest
+    environment: Prod
+    needs: get_files
+    steps:
+    - uses: actions/download-artifact@v3
+      with:
+        name: drop
+        path: published
+    - name: Deploy Power BI
+      shell: pwsh
+      run: |
+        ./published/scripts/powerbiDeploy.ps1 -ClientId ${{ secrets.ClientID }} -TenantId ${{ secrets.TenantID }} -ClientSecret ${{ secrets.ClientSecret }} -reportPrefix "[STG] " -reportsFolder "published/reports"
