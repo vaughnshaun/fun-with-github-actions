@@ -1,0 +1,12 @@
+{
+	"parameters": [
+		{
+		  "name": "DatabaseServer",
+		  "newValue": "devserver"
+		},
+		{
+		  "name": "DatabaseName",
+		  "newValue": "devdata"
+		}
+	]
+}

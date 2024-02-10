@@ -1,25 +1,9 @@
-param ($ClientId, $TenantId, $ClientSecret, $reportsPath,
+param ($ClientId, $TenantId, $ClientSecret, $reportsPath, $defaultSettingsPath,
 $workspaceName ="FromGithub", 
 $reportsFolder = "**", 
 $reportPrefix = "", 
-$dataSetConnections = '[
-{
-  "name": "website",
-  "newValue": "https://learn.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-8.0"
-},
-{
-  "name": "frank",
-  "newValue": "test"
-},
-{
-  "name": "DatabaseServer",
-  "newValue": "TestThisServer"
-},
-{
-  "name": "DatabaseName",
-  "newValue": "TestThisDatabase"
-}
-]')
+$env = "dev"
+)
 #$ErrorActionPreference = "Stop"
 Set-PSRepository PSGallery -InstallationPolicy Trusted
 Install-Module -Name MicrosoftPowerBIMgmt.Workspaces
@@ -27,25 +11,22 @@ Install-Module -Name MicrosoftPowerBIMgmt.Reports
 Install-Module -Name MicrosoftPowerBIMgmt.Profile
 Install-Module -Name MicrosoftPowerBIMgmt.Data
 
+# Get the settings
+$settings = $null
+if(Test-Path -Path $defaultSettingsPath)
+{
+	$settings = (Get-Content -Path $defaultSettingsPath | ConvertFrom-Json)
+}
+
 # Get all reports
-$searchPath = ""
-if ($reportsPath -ne $null){  
-	$searchPath = $reportsPath
-}
-else {
-	$searchPath = $($pwd.Path + "\"+ $reportsFolder +"\**\*.pbix")
-}
 
 # Display params
 echo Preparing to upload
 Write-Host $("Workspace: " + $workspaceName)
-Write-Host $("Reports path: " + $searchPath)
+Write-Host $("Reports path: " + $$reportsPath)
 Write-Host $("Report Prefix: " + $reportPrefix)
-Write-Host $("Dataset Connections: " + $dataSetConnections)
-
-$body = $('{ "updateDetails":' + $dataSetConnections + '}').ToString()
   
-$allReports = Get-ChildItem -Path $searchPath -Recurse
+$allReports = Get-ChildItem -Path $reportsPath -Recurse -Include *.pbix
 
 # Create Secure Strings
 $SecurePassword = ConvertTo-SecureString $ClientSecret -Force -AsPlainText
@@ -59,52 +40,46 @@ $workspaceId = ( Get-PowerBIWorkspace -Name $workspaceName ).id
 
 # Deploy all reports
 foreach ($report in $allReports)
-{
+{	
 	$reportName = $reportPrefix + $report.Name
 	$reportPath = $report.FullName
 	$baseReportName = $reportPrefix + $report.BaseName
-
-	echo ("uploading " + $reportPath)
-	New-PowerBIReport -Path $reportPath -Name $reportName -WorkspaceId $workspaceId -ConflictAction CreateOrOverwrite
-	$datasetId = (Get-PowerBIReport -Name $baseReportName -WorkspaceId $workspaceId).DatasetId
-
-	# Update connections for report dataset
-	$urlUpdateParams = $("https://api.powerbi.com/v1.0/myorg/groups/" + $workspaceId + "/datasets/"+ $datasetId +"/Default.UpdateParameters")
-	echo $urlUpdateParams
-
-	$content = 'application/json'
-
-	#Take over ownership
-	$TakeOverUrl = $("https://api.powerbi.com/v1.0/myorg/groups/" + $workspaceId + "/datasets/"+ $datasetId +"/Default.TakeOver")
-	Invoke-PowerBIRestMethod -Url $TakeOverUrl -Method Post
-
-	# Updates Dataset Parameters
-	try{
-	  Invoke-PowerBIRestMethod -Url $urlUpdateParams -Method Post -Body $body -ContentType $content -ErrorAction Stop
+	$reportSettings = $settings
+	
+	if($settings -eq $null)
+	{
+		$reportSettingsPath = $($reportsPath + "/" + $report.BaseName + "settings." + $env + ".json")
+		if(Test-Path -Path $reportSettingsPath)
+		{
+			$reportSettings = (Get-Content -Path $reportSettingsPath | ConvertFrom-Json)
+		}
 	}
-	catch [System.AggregateException]{
-	  $exceptionCode = ""
-	  if($PSItem.Exception.InnerException -ne $null)
-	  {
-		$innerExMsg = $PSItem.Exception.InnerException.Message
-		$exceptionCode = ($innerExMsg | ConvertFrom-Json).code
-		Write-Host $exceptionCode
-	  }
-	  
-	  if ($exceptionCode -eq "ItemNotFound")
-	  {
-		  Write-Warning "All parameters not updated. This is ok. The shared connections will still be updated"
-	  }
-	  else 
-	  {
-		Write-Error $PSItem.Exception
-		throw $PSItem
-	  }
-	}
+	
+	if($reportSettings -ne $null)
+	{
+		echo ("uploading " + $reportPath)
+		New-PowerBIReport -Path $reportPath -Name $reportName -WorkspaceId $workspaceId -ConflictAction CreateOrOverwrite
+		$datasetId = (Get-PowerBIReport -Name $baseReportName -WorkspaceId $workspaceId).DatasetId
 
-	# Refresh Dataset
-	$refreshUrl = $("https://api.powerbi.com/v1.0/myorg/groups/" + $workspaceId + "/datasets/"+ $datasetId +"/refreshes")
-	Invoke-PowerBIRestMethod -Url $refreshUrl -Method Post
+		# Update connections for report dataset
+		$body = $('{ "updateDetails":' + $settings.Parameters + '}').ToString()
+		Write-Host $("Update Parameters: " + $settings.Parameters)
+		$urlUpdateParams = $("https://api.powerbi.com/v1.0/myorg/groups/" + $workspaceId + "/datasets/"+ $datasetId +"/Default.UpdateParameters")
+		echo $urlUpdateParams
+
+		$content = 'application/json'
+
+		#Take over ownership
+		$TakeOverUrl = $("https://api.powerbi.com/v1.0/myorg/groups/" + $workspaceId + "/datasets/"+ $datasetId +"/Default.TakeOver")
+		Invoke-PowerBIRestMethod -Url $TakeOverUrl -Method Post
+
+		# Updates Dataset Parameters
+		Invoke-PowerBIRestMethod -Url $urlUpdateParams -Method Post -Body $body -ContentType $content -ErrorAction Stop
+
+		# Refresh Dataset
+		$refreshUrl = $("https://api.powerbi.com/v1.0/myorg/groups/" + $workspaceId + "/datasets/"+ $datasetId +"/refreshes")
+		Invoke-PowerBIRestMethod -Url $refreshUrl -Method Post	
+	}
 }
 
 Disconnect-PowerBIServiceAccount
