@@ -46,13 +46,11 @@ foreach ($report in $allReports)
 	$baseReportName = $reportPrefix + $report.BaseName
 	$reportSettings = $settings
 	
-	if($settings -eq $null)
+	# Override default settings with reports settings
+	$reportSettingsPath = $($reportsPath + "/" + $report.BaseName + "/settings." + $env + ".json")
+	if(Test-Path -Path $reportSettingsPath)
 	{
-		$reportSettingsPath = $($reportsPath + "/" + $report.BaseName + "settings." + $env + ".json")
-		if(Test-Path -Path $reportSettingsPath)
-		{
-			$reportSettings = (Get-Content -Path $reportSettingsPath | ConvertFrom-Json)
-		}
+		$reportSettings = (Get-Content -Path $reportSettingsPath | ConvertFrom-Json)
 	}
 	
 	if($reportSettings -ne $null)
@@ -62,8 +60,8 @@ foreach ($report in $allReports)
 		$datasetId = (Get-PowerBIReport -Name $baseReportName -WorkspaceId $workspaceId).DatasetId
 
 		# Update connections for report dataset
-		$body = $('{ "updateDetails":' + $settings.Parameters + '}').ToString()
-		Write-Host $("Update Parameters: " + $settings.Parameters)
+		$body = $('{ "updateDetails":' + $reportSettings.Parameters + '}').ToString()
+		Write-Host $("Update Parameters: " + $reportSettings.Parameters)
 		$urlUpdateParams = $("https://api.powerbi.com/v1.0/myorg/groups/" + $workspaceId + "/datasets/"+ $datasetId +"/Default.UpdateParameters")
 		echo $urlUpdateParams
 
