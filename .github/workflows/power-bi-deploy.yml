@@ -56,7 +56,7 @@ jobs:
     - name: Deploy Power BI
       shell: pwsh
       run: |
-        ./published/scripts/powerbiDeploy.ps1 -ClientId ${{ secrets.ClientID }} -TenantId ${{ secrets.TenantID }} -ClientSecret ${{ secrets.ClientSecret }} -workspaceName FromGithub -reportPrefix "[DEV] " -reportsPath "${{ github.workspace }}/published/reports/*.pbix" -dataSetConnections '${{ vars.DATA_CONNECTIONS }}'
+        ./published/scripts/powerbiDeploy.ps1 -ClientId ${{ secrets.ClientID }} -TenantId ${{ secrets.TenantID }} -ClientSecret ${{ secrets.ClientSecret }} -workspaceName FromGithub -reportPrefix "[DEV] " -reportsPath "${{ github.workspace }}/published/reports/" -env = "dev"
   Stage:
     runs-on: ubuntu-latest
     environment: Stage
@@ -69,7 +69,7 @@ jobs:
     - name: Deploy Power BI
       shell: pwsh
       run: |
-        ./published/scripts/powerbiDeploy.ps1 -ClientId ${{ secrets.ClientID }} -TenantId ${{ secrets.TenantID }} -ClientSecret ${{ secrets.ClientSecret }} -workspaceName FromGithub -reportPrefix "[STG] " -reportsPath "${{ github.workspace }}/published/reports/*.pbix" -dataSetConnections '${{ vars.DATA_CONNECTIONS }}'
+        ./published/scripts/powerbiDeploy.ps1 -ClientId ${{ secrets.ClientID }} -TenantId ${{ secrets.TenantID }} -ClientSecret ${{ secrets.ClientSecret }} -workspaceName FromGithub -reportPrefix "[STG] " -reportsPath "${{ github.workspace }}/published/reports" -env = "stage"
   Prod:
     runs-on: ubuntu-latest
     environment: Prod
@@ -82,4 +82,4 @@ jobs:
     - name: Deploy Power BI
       shell: pwsh
       run: |
-        ./published/scripts/powerbiDeploy.ps1 -ClientId ${{ secrets.ClientID }} -TenantId ${{ secrets.TenantID }} -ClientSecret ${{ secrets.ClientSecret }} -workspaceName FromGithub -reportsPath "${{ github.workspace }}/published/reports/*.pbix" -dataSetConnections '${{ vars.DATA_CONNECTIONS }}'
+        ./published/scripts/powerbiDeploy.ps1 -ClientId ${{ secrets.ClientID }} -TenantId ${{ secrets.TenantID }} -ClientSecret ${{ secrets.ClientSecret }} -workspaceName FromGithub -reportsPath "${{ github.workspace }}/published/reports" -dataSetConnections -env = "prod"
